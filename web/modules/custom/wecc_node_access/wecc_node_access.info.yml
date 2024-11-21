@@ -1,0 +1,5 @@
+name: 'WECC Node Access'
+type: module
+description: 'Control edit permissions for certain nodes'
+package: WECC
+core_version_requirement: ^10 || ^11
