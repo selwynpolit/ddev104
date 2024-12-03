@@ -1,0 +1,14 @@
+uuid: c94b8b78-17a1-4b87-8529-d244b003983f
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.ripa
+  module:
+    - user
+id: user_remove_role_action.ripa
+label: 'Remove the RIPA role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: ripa

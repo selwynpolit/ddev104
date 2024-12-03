@@ -1,0 +1,9 @@
+uuid: f53e42e7-01a0-4d91-b9b6-704617176d30
+langcode: en
+status: true
+dependencies: {  }
+id: ripa
+label: RIPA
+weight: 4
+is_admin: null
+permissions: {  }

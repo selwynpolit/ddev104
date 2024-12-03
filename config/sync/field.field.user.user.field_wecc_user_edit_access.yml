@@ -1,0 +1,30 @@
+uuid: 06ad9ca8-502f-4cb2-8954-e4c4bc007466
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_wecc_user_edit_access
+    - taxonomy.vocabulary.wecc_edit_access
+  module:
+    - user
+id: user.user.field_wecc_user_edit_access
+field_name: field_wecc_user_edit_access
+entity_type: user
+bundle: user
+label: 'WECC User Edit Access'
+description: 'Specify the term(s) that allow this user to edit tagged content'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      wecc_edit_access: wecc_edit_access
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

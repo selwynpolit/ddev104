@@ -21,41 +21,74 @@ function wecc_node_access_node_access(NodeInterface $node, $op, AccountInterface
     return AccessResult::neutral();
   }
 
+  if (FALSE) {
+    if ($op == 'update') {
+      // Load term id from field field_wecc_edit_access.
+      $node_edit_access_tid = $node->get('field_wecc_edit_access')->target_id;
+      if (is_null($node_edit_access_tid)) {
+        //      return AccessResult::neutral();
+        return AccessResult::neutral()->addCacheableDependency($node);
+      }
+
+      // load the field_wecc_user_edit_access from the user.
+      $user = User::load($account->id());
+      // load all the values from the field field_wecc_user_edit_access.
+      $user_edit_access_tids = $user->get('field_wecc_user_edit_access')
+        ->getValue();
+      if (empty($user_edit_access_tids)) {
+        //      return AccessResult::neutral();
+        return AccessResult::neutral()->addCacheableDependency($user);
+      }
+
+      // Check if user has role 'content_editor'.
+      if (!$account->hasRole('content_editor')) {
+        //      return AccessResult::neutral();
+        return AccessResult::neutral()->addCacheContexts(['user.roles']);
+      }
+
+      // Build an array of the term ids stored in the field field_wecc_user_edit_access.
+      $user_tids = [];
+      foreach ($user_edit_access_tids as $user_edit_access_tid) {
+        $user_tids[] = $user_edit_access_tid['target_id'];
+      }
+      if (in_array($node_edit_access_tid, $user_tids)) {
+        //      return AccessResult::allowed();
+        return AccessResult::allowed()
+          ->addCacheableDependency($node)
+          ->addCacheableDependency($user);
+      }
+    } //if FALSE
+  }
+
   if ($op == 'update') {
-    // Load term id from field field_wecc_edit_access.
-    $node_edit_access_tid = $node->get('field_wecc_edit_access')->target_id;
-    if (is_null($node_edit_access_tid)) {
-//      return AccessResult::neutral();
-      return AccessResult::neutral()->addCacheableDependency($node);
-    }
-
-    // load the field_wecc_user_edit_access from the user.
-    $user = User::load($account->id());
-    // load all the values from the field field_wecc_user_edit_access.
-    $user_edit_access_tids = $user->get('field_wecc_user_edit_access')->getValue();
-    if (empty($user_edit_access_tids)) {
-//      return AccessResult::neutral();
-      return AccessResult::neutral()->addCacheableDependency($user);
-    }
-
     // Check if user has role 'content_editor'.
     if (!$account->hasRole('content_editor')) {
-//      return AccessResult::neutral();
-      return AccessResult::neutral()->addCacheContexts(['user.roles']);
+      return AccessResult::neutral()->addCacheableDependency($node);
+    }
+    // load the values in field_role_access.
+    $node_edit_access_roles = $node->get('field_role_access')->target_id;
+    if (empty($node_edit_access_roles)) {
+      return AccessResult::neutral()->addCacheableDependency($node);
+    }
+    if (is_string($node_edit_access_roles)) {
+      $node_edit_access_roles = [$node_edit_access_roles];
+    }
+    // Get the user's roles
+    $user = User::load($account->id());
+    $user_roles = $user->getRoles();
+    if (is_string($user_roles)) {
+      $user_role_ids = [$user_roles];
     }
 
-    // Build an array of the term ids stored in the field field_wecc_user_edit_access.
-    $user_tids = [];
-    foreach ($user_edit_access_tids as $user_edit_access_tid) {
-      $user_tids[] = $user_edit_access_tid['target_id'];
-    }
-    if (in_array($node_edit_access_tid, $user_tids)) {
-//      return AccessResult::allowed();
-      return AccessResult::allowed()->addCacheableDependency($node)->addCacheableDependency($user);
-
+    // Check if there is an intersection of roles between the user and the node.
+    if (array_intersect($node_edit_access_roles, $user_roles)) {
+      return AccessResult::allowed()
+        ->addCacheableDependency($node)
+        ->addCacheableDependency($user);
     }
   }
-//  return AccessResult::neutral();
+
+    //  return AccessResult::neutral();
   return AccessResult::neutral()->addCacheableDependency($node);
 }
 
@@ -68,8 +101,9 @@ function wecc_node_access_form_alter(&$form,FormStateInterface $form_state, $for
  // Modify form to hide field field_wecc_edit_access if user does not have role 'admin'.
   $user = \Drupal::currentUser();
   if (!$user->hasRole('administrator')) {
-    if (isset($form['field_wecc_edit_access'])) {
-      $form['field_wecc_edit_access']['#access'] = FALSE;
+//    if (isset($form['field_wecc_edit_access'])) {
+    if (isset($form['field_role_access'])) {
+      $form['field_role_access']['#access'] = FALSE;
     }
   }
 }

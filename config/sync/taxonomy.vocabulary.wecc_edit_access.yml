@@ -1,0 +1,9 @@
+uuid: 94243c48-73d9-404e-9d1f-e4654bf383cd
+langcode: en
+status: true
+dependencies: {  }
+name: 'WECC Edit Access'
+vid: wecc_edit_access
+description: 'Control edit access for nodes'
+weight: 0
+new_revision: false

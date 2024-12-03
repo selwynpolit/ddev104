@@ -1,0 +1,23 @@
+uuid: a1b62e89-dc48-4857-b947-ce95380d3d4e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_role_access
+    - node.type.page
+id: node.page.field_role_access
+field_name: field_role_access
+entity_type: node
+bundle: page
+label: 'Role Access'
+description: 'Specify a role that will be permitted to edit this node'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:user_role'
+  handler_settings:
+    target_bundles: null
+    auto_create: false
+field_type: entity_reference

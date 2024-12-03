@@ -1,0 +1,14 @@
+uuid: 3e71dc40-00a4-46c1-9f96-9d08236dd212
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.ripa
+  module:
+    - user
+id: user_add_role_action.ripa
+label: 'Add the RIPA role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: ripa
